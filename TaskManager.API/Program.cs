@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
+
 //using Serilog;
 using System.Text;
 using System.Text.Json;
@@ -35,13 +37,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 #region ================== Serilog Configuration ==================
-//Log.Logger = new LoggerConfiguration()
-//    .ReadFrom.Configuration(builder.Configuration) // Reads from appsettings.json
-//    .Enrich.FromLogContext()
-//    .CreateLogger();
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration) // Reads from appsettings.json
+    .Enrich.FromLogContext()
+    .CreateLogger();
 
-//builder.Host.UseSerilog();
-//builder.Logging.ClearProviders();
+builder.Host.UseSerilog();
+builder.Logging.ClearProviders();
 #endregion
 
 
@@ -151,15 +153,15 @@ builder.Services.AddHttpContextAccessor();
 
 
 var conn = builder.Configuration["DB_LOCAL"]?? builder.Configuration["DB_PROD"];
-if (string.IsNullOrWhiteSpace(conn))
-{
-    Console.WriteLine("DB connection string not found.");
-}
-else
-{
-    Console.WriteLine("DB connection loaded.");
-}
-Console.WriteLine("Using DB: " + conn);
+//if (string.IsNullOrWhiteSpace(conn))
+//{
+//    Console.WriteLine("DB connection string not found.");
+//}
+//else
+//{
+//    Console.WriteLine("DB connection loaded.");
+//}
+//Console.WriteLine("Using DB: " + conn);
 
 builder.Services.AddDbContext<AuthDBContext>(options => options.UseSqlServer(conn));
 

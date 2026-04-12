@@ -79,6 +79,8 @@ namespace TaskManager.Services
 
                 var response = await _httpClient.PostAsJsonAsync("http://localhost:11434/api/generate", payload);
 
+
+
                 if (!response.IsSuccessStatusCode)
                 {
                     _logger.LogError("[{logId}] Ollama call failed. StatusCode={StatusCode}", logId, response.StatusCode);

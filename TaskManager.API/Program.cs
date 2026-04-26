@@ -256,12 +256,16 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // Use Swagger only in development
-app.UseSwagger();
-app.UseSwaggerUI(c =>
+// Enable Swagger in all environments (or control it here)
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TaskManager API v1");
-    c.RoutePrefix = "swagger"; // /swagger
-});
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "TaskManager API v1");
+        c.RoutePrefix = "swagger";
+    });
+}
 
 if (app.Environment.IsDevelopment())
 {
@@ -297,6 +301,7 @@ app.UseStatusCodePages(async context =>
 #region ================== Request Middleware Pipeline ==================
 
 //Registers Authentication Middleware
+//app.UseDeveloperExceptionPage(); // Detailed error pages in development
 app.UseRouting();
 //middleware order matters
 app.UseCors("AllowClientFrom");
@@ -305,8 +310,10 @@ app.UseAuthorization();  // Reads [Authorize] attributes //Evaluates: Is user au
 
 app.UseStaticFiles();
 
-app.MapControllers();// Maps controller routes
-
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 app.Run();// Run the application
 
 #endregion

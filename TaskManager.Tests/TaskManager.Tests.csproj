@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TaskManager.API\TaskManager.MultiTenant.csproj" />
+    <ProjectReference Include="..\TaskManager.API\TaskManagerService.csproj" />
   </ItemGroup>
 
   <ItemGroup>

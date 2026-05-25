@@ -8,8 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager.Tests", "TaskManager.Tests\TaskManager.Tests.csproj", "{A2004ECF-8911-08DB-664E-B6A531416493}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthenticationService", "AuthenticationService\AuthenticationService.csproj", "{B68C7D0B-786D-433A-AC14-90673B3C6D4C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManagerService", "TaskManagerService\TaskManagerService.csproj", "{C996F1A4-38FF-70FA-DAC3-602FD7C2A998}"
@@ -22,10 +20,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A2004ECF-8911-08DB-664E-B6A531416493}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A2004ECF-8911-08DB-664E-B6A531416493}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A2004ECF-8911-08DB-664E-B6A531416493}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A2004ECF-8911-08DB-664E-B6A531416493}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B68C7D0B-786D-433A-AC14-90673B3C6D4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B68C7D0B-786D-433A-AC14-90673B3C6D4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B68C7D0B-786D-433A-AC14-90673B3C6D4C}.Release|Any CPU.ActiveCfg = Release|Any CPU

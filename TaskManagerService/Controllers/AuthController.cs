@@ -7,6 +7,7 @@ using TaskManager.MultiTenant.DTOs;
 using TaskManager.Services.Interfaces;
 
 //testing
+// HTTP LAYER ONLY, NO BUSINESS LOGIC HERE, JUST CALLING THE SERVICE LAYER AND RETURNING THE RESPONSE
 namespace TaskManager.Controllers
 {
     [Route("api/[controller]")]
@@ -48,18 +49,12 @@ namespace TaskManager.Controllers
 
 
 
+        // CORRECT HTTP LAYER ONLY
         [HttpPost("login")]
         public async Task<ActionResult> LoginUser(LoginRequestDTO dto)
         {
             var logId = Guid.NewGuid().ToString();
             _logger.LogInformation("[{logId}] Login attempt with Username: {Username}", logId, dto.Username);
-
-            if (dto == null || string.IsNullOrWhiteSpace(dto.Username) || string.IsNullOrWhiteSpace(dto.Password))
-            {
-                _logger.LogWarning("[{logId}] Invalid login request: {Request}", logId, dto);
-                return BadRequest(ResponseHelper.BadRequest("Invalid login data."));
-            }
-            _logger.LogDebug("[{logId}] Entering LoginUserAsync with Username: {Username}", logId, dto.Username);
             var response = await _authService.LoginUserAsync(dto, logId);
             _logger.LogInformation("[{logId}] Login Successfull for Username: {Username} ", logId, dto.Username);
             return StatusCode(HttpStatusMapper.GetHttpStatusCode(response.ResponseCode), response);

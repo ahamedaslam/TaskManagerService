@@ -26,6 +26,9 @@ namespace TaskManager.Controllers
             var logId = Guid.NewGuid().ToString();
 
             var tenantId = _currentUserService.GetTenantId;
+            var userId = _currentUserService.GetUserId;
+            var role = _currentUserService.GetRole;
+
 
             if (string.IsNullOrEmpty(tenantId))
             {
@@ -33,7 +36,7 @@ namespace TaskManager.Controllers
                 return Unauthorized(ResponseHelper.Unauthorized("TenantId not found in claims."));
             }
             _logger.LogDebug("[{LogId}] Entering GetDashboardStats with TenantId: {TenantId}", logId, tenantId);
-            var result = await _dashboardService.GetDashboardStatsAsync(tenantId, logId);
+            var result = await _dashboardService.GetDashboardStatsAsync(tenantId, userId, role,logId);
 
             if (result == null)
             {

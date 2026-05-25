@@ -1,4 +1,5 @@
-﻿using TaskManager.DTOs.DashBoard;
+﻿using TaskManager.API.Repositories.Interface;
+using TaskManager.DTOs.DashBoard;
 using TaskManager.Helper;
 using TaskManager.Interface;
 using TaskManager.Models.Responses;
@@ -16,27 +17,48 @@ public class DashboardService : IDashboardService
         _dashboardRepository = dashboardRepository;
     }
 
-    public async Task<Response<DashboardStatsDto>> GetDashboardStatsAsync(string tenantId,string logId)
+    public async Task<Response<DashboardStatsDto>> GetDashboardStatsAsync(
+      string tenantId,
+      string userId,
+      string role,
+      string logId)
     {
-       
-        _logger.LogInformation("[{LogId}] Fetching dashboard stats for TenantId: {TenantId}", logId, tenantId);
+        _logger.LogInformation(
+            "[{LogId}] Fetching dashboard stats for TenantId: {TenantId}",
+            logId,
+            tenantId);
 
         try
         {
-            var stats = await _dashboardRepository.GetDashboardStatsAsync(tenantId);
+            var stats = await _dashboardRepository
+                .GetDashboardStatsAsync(tenantId, userId, role);
 
             if (stats == null)
             {
-                _logger.LogWarning("[{LogId}] No dashboard stats found for TenantId: {TenantId}", logId, tenantId);
-                return ResponseHelper.NotFound<DashboardStatsDto>("No dashboard stats found.");
+                _logger.LogWarning(
+                    "[{LogId}] No dashboard stats found for TenantId: {TenantId}",
+                    logId,
+                    tenantId);
+
+                return ResponseHelper.NotFound<DashboardStatsDto>(
+                    "No dashboard stats found.");
             }
 
-            _logger.LogInformation("[{LogId}] Successfully fetched dashboard stats for TenantId: {TenantId}", logId, tenantId);
-            return ResponseHelper.SuccessGeneric<DashboardStatsDto>(stats);
+            _logger.LogInformation(
+                "[{LogId}] Successfully fetched dashboard stats for TenantId: {TenantId}",
+                logId,
+                tenantId);
+
+            return ResponseHelper.SuccessGeneric(stats);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "[{LogId}] Exception while fetching dashboard stats for TenantId: {TenantId}", logId, tenantId);
+            _logger.LogError(
+                ex,
+                "[{LogId}] Exception while fetching dashboard stats for TenantId: {TenantId}",
+                logId,
+                tenantId);
+
             throw;
         }
     }
@@ -67,6 +89,5 @@ public class DashboardService : IDashboardService
     //    }
     //}
 
- 
+
 }
- 

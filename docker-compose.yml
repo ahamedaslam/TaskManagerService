@@ -60,6 +60,22 @@ services:
     networks:
       - taskmanager-network
 
+  gateway:
+    build:
+      context: .
+      dockerfile: TaskManager.Gateway/Dockerfile
+    container_name: taskmanager-gateway
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_HTTP_PORTS: "8081"
+    depends_on:
+      app:
+        condition: service_started
+    ports:
+      - "8081:8081"
+    networks:
+      - taskmanager-network
+
 volumes:
   db_data:
 

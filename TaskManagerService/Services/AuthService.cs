@@ -15,7 +15,9 @@ using TaskManager.MultiTenant.Helper;
 using TaskManager.MultiTenant.Utils;
 using TaskManager.Services.Interfaces;
 
-public class AuthService : IAuthService
+
+// BUSINESS LOGIC LAYER, ALL THE BUSINESS LOGIC GOES HERE, THIS LAYER IS CALLED BY THE CONTROLLER LAYER
+public class AuthService : IAuthService //CONCRETE IMPLEMENTATION OF THE IAuthService INTERFACE
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly ITokenRepository _tokenRepository;

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -8,6 +10,7 @@ using Serilog;
 //using Serilog;
 using System.Text;
 using System.Text.Json;
+using TaskManager.API.Repositories.Interface;
 using TaskManager.DBContext;
 using TaskManager.Helper;
 using TaskManager.Interface;
@@ -16,6 +19,7 @@ using TaskManager.IRepository;
 using TaskManager.IServices;
 using TaskManager.Middleware;
 using TaskManager.Models;
+using TaskManager.MultiTenant.Validators;
 using TaskManager.Repository;
 using TaskManager.Services;
 using TaskManager.Services.Interfaces;
@@ -100,6 +104,14 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+#endregion
+
+#region ================== FluentValidation Config ==================
+
+// FluentValidation registrations - organized as other configs in a region
+builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
 #endregion
 
 #region ================== CONFIG REDIS ==================
@@ -317,9 +329,6 @@ app.UseEndpoints(endpoints =>
 app.Run();// Run the application
 
 #endregion
-
-
-
 
 
 

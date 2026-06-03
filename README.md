@@ -1,96 +1,379 @@
-# Task Manager - Tenant API
+# 🚀 Task Manager Service
 
-A scalable and secure **multi-tenant task management system** built with **ASP.NET Core**. This project is designed to handle multiple organizations (tenants) while ensuring strict data isolation and role-based security.
+A scalable and secure **Multi-Tenant Task Management System** built with **ASP.NET Core**. The service is designed to support multiple organizations (tenants) while ensuring strict data isolation, role-based security, and enterprise-grade architecture.
 
-## 🚀 Overview
+---
 
-The Task Manager API streamlines collaboration by allowing users to manage tasks effectively across different clients or departments. It addresses enterprise-level challenges such as secure data separation, role-based access control (Admin vs. Normal User), and system maintainability through clean architecture.
+## 📖 Overview
+
+Task Manager Service is part of a modern microservices-based task management platform. It enables organizations to manage tasks efficiently while maintaining complete tenant isolation and secure access controls.
+
+The service is built following clean architecture principles and supports enterprise features such as:
+
+* Multi-Tenant Architecture
+* Role-Based Authorization (RBAC)
+* JWT Authentication
+* AI-Powered Task Assistant
+* Structured Logging
+* Advanced Task Filtering & Pagination
+
+---
 
 ## 🛠 Technology Stack
 
-* Backend:** ASP.NET Core Web API (.NET 7/8) 
+| Technology            | Description                |
+| --------------------- | -------------------------- |
+| ASP.NET Core 8        | Backend API Framework      |
+| Entity Framework Core | ORM & Data Access          |
+| SQL Server            | Relational Database        |
+| Angular               | Frontend Application       |
+| JWT Authentication    | Secure User Authentication |
+| ASP.NET Identity      | User & Role Management     |
+| Serilog               | Structured Logging         |
+| Swagger/OpenAPI       | API Documentation          |
+| Ocelot API Gateway    | API Gateway & Routing      |
+| Azure SQL             | Cloud Database             |
+| IIS + Kestrel         | Hosting Infrastructure     |
 
-* Database:** SQL Server with Entity Framework Core 
+---
 
-* Frontend:** Angular 
+## 🏗 Architecture
 
-* Security:** JWT Authentication, ASP.NET Identity, and OTP Verification 
+The application follows a layered architecture to ensure maintainability, scalability, and separation of concerns.
 
-* Logging:** Serilog with structured logging 
+### Layers
 
-* Documentation:** Swagger / OpenAPI 
+* Controllers
+* Services
+* Repositories
+* DTOs
+* Middleware
+* Helpers
 
+### Design Patterns
 
+* Repository Pattern
+* Service Pattern
+* Dependency Injection
+* Multi-Tenant Architecture
+* Clean Architecture Principles
 
-## 🏗 Architecture & Patterns
+---
 
-The project follows industry best practices to ensure a clean and modular codebase:
+## 🔐 Security Features
 
-* Layered Architecture:** Separate layers for Controllers, Services, Repositories, and Middleware.
+### Authentication
 
-* Repository & Service Patterns:** Decouples business logic from data persistence.
+* JWT Access Tokens
+* Refresh Token Support
+* OTP Verification
+* ASP.NET Identity Integration
 
-* Multi-Tenancy:** A dedicated user-tenant linking system to scope data access.
+### Authorization
 
-* Middleware:** Custom implementation for global exception handling and JWT processing.
+Role-based access control:
 
+#### Admin
 
+* Create Tasks
+* Update Tasks
+* Delete Tasks
+* View All Tenant Tasks
+* Manage Users
+
+#### Normal User
+
+* View Assigned Tasks
+* Update Task Status
+* Access Personal Dashboard
+
+---
+
+## 🏢 Multi-Tenancy
+
+The system supports multiple tenants while maintaining strict data isolation.
+
+### Tenant Isolation
+
+Every request is scoped by:
+
+* Tenant ID
+* User ID
+* User Role
+
+This ensures:
+
+* No cross-tenant data leakage
+* Secure access boundaries
+* Enterprise-grade security
+
+---
 
 ## ✨ Key Features
 
-* Multi-Tenant Isolation:** Data is strictly separated between tenants.
+### Task Management
 
-* Role-Based Access Control (RBAC):
-  
-* Admin:** Full task management capabilities.
+* Create Tasks
+* Update Tasks
+* Delete Tasks
+* View Tasks
+* Task Assignment
+* Task Completion Tracking
 
-* Normal User:** Restricted to viewing and updating their own tasks.
+### Advanced Search
 
-* Advanced Task Management:** Support for CRUD operations, filtering, sorting, and pagination.
+* Filtering
+* Sorting
+* Pagination
+* Search by Status
+* Search by User
 
-* AI Chatbot:** An integrated assistant that answers task-related queries and provides summaries while respecting tenant permissions.
+### Dashboard Analytics
 
-* Structured Logging:** Every log entry includes a unique `logId` for easier debugging.
+* Task Statistics
+* Completion Metrics
+* Pending Tasks
+* Productivity Insights
 
+### AI Assistant
 
+Integrated AI assistant capable of:
 
-## 🛣 API Endpoints (Quick Reference)
+* Task Summarization
+* Task Insights
+* Productivity Assistance
+* Context-Aware Responses
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| `POST` | `/api/login` | Authenticate and receive JWT.
-| `POST` | `/api/Tenant` | Register a new tenant.
-| `GET` | `/api/taskmanager` | Get tasks (filtered/paged).
-| `POST` | `/api/taskmanager` | Create a new task.
-| `PATCH` | `/api/taskmanager/completion-status` | Toggle task status.
+### Structured Logging
 
+Every operation includes:
 
-## 📂 Project Structure
+* Request Tracking
+* Correlation IDs
+* Tenant Context
+* User Context
+* Unique Log Identifier
 
-The solution is organized into logical components to ensure scalability:
-
-* **Controllers:** API Endpoints.
-* **Services:** Business Logic & AI Integration.
-* **Repositories:** Data Access.
-* **Models/DTOs:** Data structures and transfer objects.
-* 
-**Helpers:** Standardized response utilities (`ResponseHelper.cs`).
-
-
-  ## 🧱 System Architecture
-
-<img width="1536" height="1024" alt="ad33a615-62a1-4ba7-a906-6f65f83acf7d" src="https://github.com/user-attachments/assets/2bbbb208-60c0-4365-8c36-7e3364e3677d" />
 ---
 
-This architecture illustrates how the system securely processes multi-tenant requests using IIS, Kestrel, and Azure SQL.
+## 🌐 API Gateway Integration
+
+The platform uses **Ocelot API Gateway** for centralized request routing.
 
 ### Request Flow
 
-1. Angular frontend sends API requests over HTTPS  
-2. Azure IIS receives the request and handles SSL & routing  
-3. Kestrel (.NET runtime) executes controllers, middleware, and services  
-4. API securely communicates with Azure SQL Database  
-5. Data is returned with tenant isolation and role-based authorization  
+```text
+Angular Frontend
+        │
+        ▼
+Ocelot API Gateway
+        │
+        ▼
+Task Manager Service
+        │
+        ▼
+SQL Server
+```
 
-This layered cloud architecture ensures scalability, performance, and enterprise-grade security.
+### Example Endpoint
 
+```http
+GET /gateway/taskmanager/dashboard/taskAnalytics
+```
+
+Forwarded To:
+
+```http
+GET /api/taskmanager/dashboard/taskAnalytics
+```
+
+---
+
+## 📌 API Endpoints
+
+### Authentication
+
+| Method | Endpoint                |
+| ------ | ----------------------- |
+| POST   | /api/auth/login         |
+| POST   | /api/auth/register      |
+| POST   | /api/auth/verify-otp    |
+| POST   | /api/auth/refresh-token |
+
+---
+
+### Task Management
+
+| Method | Endpoint                                             |
+| ------ | ---------------------------------------------------- |
+| POST   | /api/taskmanager/taskmanager/create                  |
+| POST   | /api/taskmanager/taskmanager/getTasks                |
+| POST   | /api/taskmanager/taskmanager/getTask                 |
+| PUT    | /api/taskmanager/taskmanager/update                  |
+| DELETE | /api/taskmanager/taskmanager/delete                  |
+| PATCH  | /api/taskmanager/taskmanager/setTaskCompletionStatus |
+
+---
+
+### Dashboard
+
+| Method | Endpoint                                 |
+| ------ | ---------------------------------------- |
+| GET    | /api/taskmanager/dashboard/taskAnalytics |
+
+---
+
+### Tenant
+
+| Method | Endpoint                           |
+| ------ | ---------------------------------- |
+| POST   | /api/taskmanager/tenant/create     |
+| GET    | /api/taskmanager/tenant/getTenants |
+
+---
+
+### AI Chat
+
+| Method | Endpoint                     |
+| ------ | ---------------------------- |
+| POST   | /api/taskmanager/aichat/chat |
+
+---
+
+## 📂 Project Structure
+
+```text
+TaskManagerService
+│
+├── Controllers
+│   ├── TaskManagerController
+│   ├── DashboardController
+│   ├── TenantController
+│   └── AIChatController
+│
+├── Services
+│
+├── Repositories
+│
+├── DTOs
+│
+├── Entity
+│
+├── Middleware
+│
+├── Helper
+│
+└── Context
+```
+
+---
+
+## 🧱 System Architecture
+
+
+### Request Flow
+
+1. Angular frontend sends HTTPS request.
+2. Ocelot API Gateway receives the request.
+3. Gateway routes request to TaskManagerService.
+4. Middleware validates JWT and Tenant Context.
+5. Service layer executes business logic.
+6. Entity Framework communicates with SQL Server.
+7. Response is returned to the client.
+
+---
+
+## 📊 Logging & Monitoring
+
+The service uses Serilog for structured logging.
+
+Features:
+
+* Correlation ID Tracking
+* Request Logging
+* Exception Logging
+* Tenant Context Logging
+* User Context Logging
+
+Example:
+
+```text
+[RequestId: 1f34ab]
+[TenantId: Tenant001]
+[UserId: User001]
+Tasks retrieved successfully.
+```
+
+---
+
+## 🚀 Running Locally
+
+### Clone Repository
+
+```bash
+git clone https://github.com/ahamedaslam/TaskManagerService.git
+```
+
+### Restore Packages
+
+```bash
+dotnet restore
+```
+
+### Apply Database Migrations
+
+```bash
+dotnet ef database update
+```
+
+### Run Application
+
+```bash
+dotnet run
+```
+
+### Swagger
+
+```text
+https://localhost:7002/swagger
+```
+
+---
+
+## 🔮 Upcoming Enhancements
+
+* Redis Distributed Caching
+* Docker Containerization
+* Swagger Aggregation
+* Rate Limiting
+* Centralized Logging
+* Distributed Tracing
+* Event-Driven Architecture
+* Message Queues (RabbitMQ/Azure Service Bus)
+
+---
+
+## 👨‍💻 Author
+
+### Ahamed Aslam
+
+Full-Stack Software Engineer
+
+Technologies:
+
+* ASP.NET Core
+* Angular
+* Spring Boot
+* SQL Server
+* Entity Framework Core
+* Microservices
+* Ocelot API Gateway
+* JWT Authentication
+* Azure
+* Python
+
+LinkedIn:
+https://linkedin.com/in/aslam-softwareengineer
+
+Portfolio:
+https://portfolioaslam.netlify.app/

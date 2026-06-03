@@ -7,7 +7,7 @@ using TaskManager.Services.Interfaces;
 
 namespace TaskManager.Controllers
 {
-    [Route("api/ai")]
+    [Route("api/taskmanager/[controller]")]
     [ApiController]
     public class AIChatController : ControllerBase
     {

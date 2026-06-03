@@ -7,7 +7,7 @@ using TaskManager.IServices;
 namespace TaskManager.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/taskmanager/[controller]")]
     public class TenantController : ControllerBase
     {
         private readonly ITenantService _tenantService;

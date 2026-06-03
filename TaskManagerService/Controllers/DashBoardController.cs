@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace TaskManager.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/taskmanager/[controller]")]
     public class DashboardController : ControllerBase
     {
         private readonly IDashboardService _dashboardService;

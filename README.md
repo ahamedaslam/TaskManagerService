@@ -1,9 +1,37 @@
 # 🚀 Task Manager Service
 
+A scalable and secure **Multi-Tenant Task Management System** built with **ASP.NET Core**. The service is designed to support multiple organizations (tenants) while ensuring strict data isolation, role-based security, and enterprise-grade architecture.
+
+
+---
+
+## 🔐 User Login & Authentication
 
 <img width="1006" height="553" alt="Image" src="https://github.com/user-attachments/assets/62837525-e787-48bb-a59c-a6737d1e1a53" />
 
-A scalable and secure **Multi-Tenant Task Management System** built with **ASP.NET Core**. The service is designed to support multiple organizations (tenants) while ensuring strict data isolation, role-based security, and enterprise-grade architecture.
+The login page allows users to securely authenticate using JWT-based authentication and role-based access control.
+
+---
+
+## 📱 OTP Verification
+
+<img width="925" height="505" alt="Image" src="https://github.com/user-attachments/assets/1d53b9b2-ff58-4b62-8264-28de4b540add" />
+
+After successful login, users must verify their identity using a One-Time Password (OTP) for enhanced security.
+
+
+---
+
+## 📊 Dashboard Overview
+
+<img width="1365" height="632" alt="Image" src="https://github.com/user-attachments/assets/8e7aa90d-3fbd-4b64-ba18-8bc72dcca06e" />
+
+<img width="594" height="390" alt="Image" src="https://github.com/user-attachments/assets/1854bc8a-6d67-418b-8e93-5cd8c5c444f9" />
+
+<img width="643" height="389" alt="Image" src="https://github.com/user-attachments/assets/036b70aa-e86d-4fba-86ce-ba0c5ab70a74" />
+
+
+The dashboard provides a comprehensive overview of tasks, completion metrics, pending tasks, and productivity insights.
 
 ---
 
@@ -19,6 +47,21 @@ The service is built following clean architecture principles and supports enterp
 * AI-Powered Task Assistant
 * Structured Logging
 * Advanced Task Filtering & Pagination
+
+---
+
+## 🧱 System Architecture
+
+
+### Request Flow
+
+1. Angular frontend sends HTTPS request.
+2. Ocelot API Gateway receives the request.
+3. Gateway routes request to TaskManagerService.
+4. Middleware validates JWT and Tenant Context.
+5. Service layer executes business logic.
+6. Entity Framework communicates with SQL Server.
+7. Response is returned to the client.
 
 ---
 
@@ -268,21 +311,6 @@ TaskManagerService
 │
 └── Context
 ```
-
----
-
-## 🧱 System Architecture
-
-
-### Request Flow
-
-1. Angular frontend sends HTTPS request.
-2. Ocelot API Gateway receives the request.
-3. Gateway routes request to TaskManagerService.
-4. Middleware validates JWT and Tenant Context.
-5. Service layer executes business logic.
-6. Entity Framework communicates with SQL Server.
-7. Response is returned to the client.
 
 ---
 

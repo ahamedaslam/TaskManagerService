@@ -1,5 +1,8 @@
 # 🚀 Task Manager Service
 
+
+<img width="1006" height="553" alt="Image" src="https://github.com/user-attachments/assets/62837525-e787-48bb-a59c-a6737d1e1a53" />
+
 A scalable and secure **Multi-Tenant Task Management System** built with **ASP.NET Core**. The service is designed to support multiple organizations (tenants) while ensuring strict data isolation, role-based security, and enterprise-grade architecture.
 
 ---

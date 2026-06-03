@@ -71,7 +71,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "MultiTenant APIs",
+        Title = "TaskManager Service APIs",
         Version = "v1",
         Description = "APIs for managing Task Manager"
     });

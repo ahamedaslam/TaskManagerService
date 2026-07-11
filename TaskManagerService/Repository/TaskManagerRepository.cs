@@ -151,7 +151,7 @@ namespace TaskManager.Repository
         public async Task<bool> MarkTaskAsNotCompletedAsync(Guid taskId, string userId, string tenantId)
         {
             var taskItem = await _appDbContext.TaskItems
-                .FirstOrDefaultAsync(t => t.Id == taskId && t.UserId == userId && t.TenantId == t.TenantId);
+                .FirstOrDefaultAsync(t => t.Id == taskId && t.UserId == userId && t.TenantId == tenantId);
             if (taskItem == null)
             {
                 return false; // Task not found

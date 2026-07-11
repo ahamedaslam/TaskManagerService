@@ -1,0 +1,53 @@
+======================================================================
+                 DOCKER COMPOSE COMMAND CHEAT SHEET
+                     Task Manager Multi-Tenant
+======================================================================
+
+1. STARTING THE SYSTEM
+----------------------------------------------------------------------
+# Start the containers in the background (normal run)
+docker compose up -d
+
+# Rebuild code changes and restart containers (run after C# edits)
+docker compose up --build -d
+
+
+2. STOPPING & DELETING
+----------------------------------------------------------------------
+# Stop the containers (keeps your SQL Server data intact)
+docker compose down
+
+# Stop the containers and delete all DB data (wipes the database clean)
+docker compose down -v
+
+
+3. STATUS & LOGS
+----------------------------------------------------------------------
+# List all running containers and their exposed ports
+docker compose ps
+
+# View live aggregate logs for all containers combined
+docker compose logs -f
+
+# View live logs for the Task Manager API only
+docker compose logs -f app
+
+# View live logs for the Authentication API only
+docker compose logs -f auth
+
+# View live logs for the SQL Server Database only
+docker compose logs -f db
+
+# View live logs for the API Gateway only
+docker compose logs -f gateway
+
+
+4. DATABASE MIGRATIONS
+----------------------------------------------------------------------
+# Apply EF database schema to the running SQL Server container
+dotnet ef database update --project TaskManagerService
+
+
+======================================================================
+   SSMS connection: localhost,14333 (sa / StrongPassword@123)
+======================================================================

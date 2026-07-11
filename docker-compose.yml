@@ -8,11 +8,18 @@ services:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: ${SA_PASSWORD}
     ports:
-      - "1433:1433"   # Expose ONLY for local dev
+      - "14333:1433" # Expose for host DB migrations/management (avoid local SQL conflict)
     volumes:
       - db_data:/var/opt/mssql
+    healthcheck:
+      test: [ "CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "${SA_PASSWORD}", "-C", "-Q", "SELECT 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
     networks:
       - taskmanager-network
+
   redis:
     image: redis:7.0
     container_name: taskmanager-redis
@@ -21,40 +28,65 @@ services:
     networks:
       - taskmanager-network
 
-  app:
-    build: .
-    container_name: taskmanager-api
+  auth:
+    build:
+      context: .
+      dockerfile: AuthenticationService/Dockerfile
+    container_name: taskmanager-auth
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
       DOTNET_RUNNING_IN_CONTAINER: "true"
-
-      SA_PASSWORD: ${SA_PASSWORD}
-      DB_CONNECTION_STRING: ${DB_CONNECTION_STRING}
-
+      DB_LOCAL: "Server=db;Database=TaskManagerAuthDB;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;"
+      DB_PROD: "Server=db;Database=TaskManagerAuthDB;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;"
       JWT_SECRET: ${JWT_SECRET}
       JWT_ISSUER: ${JWT_ISSUER}
       JWT_AUDIENCE: ${JWT_AUDIENCE}
       JWT_REFRESH_TOKEN_EXPIRY_DAYS: ${JWT_REFRESH_TOKEN_EXPIRY_DAYS}
       JWT_ACCESS_TOKEN_EXPIRY_MINUTES: ${JWT_ACCESS_TOKEN_EXPIRY_MINUTES}
-
       OTP_EXPIRY_MINUTES: ${OTP_EXPIRY_MINUTES}
-
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-
-      EMAIL_SENDER: ${EMAIL_SENDER_NAME}
       EMAIL_FROM: ${EMAIL_FROM}
       EMAIL_SMTP_SERVER: ${EMAIL_SMTP_SERVER}
       EMAIL_PORT: ${EMAIL_PORT}
       EMAIL_USERNAME: ${EMAIL_USERNAME}
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
-
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_started
+    ports:
+      - "8082:8080"
+    networks:
+      - taskmanager-network
 
+  app:
+    build:
+      context: .
+      dockerfile: TaskManagerService/Dockerfile
+    container_name: taskmanager-api
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      DOTNET_RUNNING_IN_CONTAINER: "true"
+      DB_LOCAL: "Server=db;Database=TaskManagerAuthDB;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;"
+      DB_PROD: "Server=db;Database=TaskManagerAuthDB;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;"
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ISSUER: ${JWT_ISSUER}
+      JWT_AUDIENCE: ${JWT_AUDIENCE}
+      JWT_REFRESH_TOKEN_EXPIRY_DAYS: ${JWT_REFRESH_TOKEN_EXPIRY_DAYS}
+      JWT_ACCESS_TOKEN_EXPIRY_MINUTES: ${JWT_ACCESS_TOKEN_EXPIRY_MINUTES}
+      OTP_EXPIRY_MINUTES: ${OTP_EXPIRY_MINUTES}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      EMAIL_FROM: ${EMAIL_FROM}
+      EMAIL_SMTP_SERVER: ${EMAIL_SMTP_SERVER}
+      EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     ports:
       - "8080:8080"
     networks:
@@ -63,16 +95,17 @@ services:
   gateway:
     build:
       context: .
-      dockerfile: TaskManager.Gateway/Dockerfile
+      dockerfile: APIGateway/Dockerfile
     container_name: taskmanager-gateway
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
-      ASPNETCORE_HTTP_PORTS: "8081"
     depends_on:
+      auth:
+        condition: service_started
       app:
         condition: service_started
     ports:
-      - "8081:8081"
+      - "8081:8080" # Maps host 8081 to container 8080 (ASP.NET default HTTP port)
     networks:
       - taskmanager-network
 

@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -173,7 +173,7 @@ var conn = builder.Configuration["DB_LOCAL"]?? builder.Configuration["DB_PROD"];
 //{
 //    Console.WriteLine("DB connection loaded.");
 //}
-//Console.WriteLine("Using DB: " + conn);
+Console.WriteLine("Using DB: " + conn);
 
 builder.Services.AddDbContext<AuthDBContext>(options => options.UseSqlServer(conn));
 

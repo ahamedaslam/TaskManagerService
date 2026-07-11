@@ -9,11 +9,11 @@ using TaskManager.Services;
 [Route("api/[controller]")]
 public class TaskManagerController : ControllerBase
 {
-    private readonly TaskManagerService _taskManagerService;
+    private readonly TaskManagerService  _taskManagerService;
     private readonly ILogger<TaskManagerController> _logger;
     private readonly CurrentUserService _currentUserService;
 
-    public TaskManagerController(TaskManagerService taskManagerService,CurrentUserService currentUserService, ILogger<TaskManagerController> logger)
+    public TaskManagerController(TaskManagerService  taskManagerService,CurrentUserService currentUserService, ILogger<TaskManagerController> logger)
     {
         _taskManagerService = taskManagerService;
         _logger = logger;

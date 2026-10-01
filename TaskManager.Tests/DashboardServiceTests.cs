@@ -1,13 +1,18 @@
-using Moq;
 using Microsoft.Extensions.Logging;
+using Moq;
+using System.Threading.Tasks;
 using TaskManager.API.Repositories.Interface;
 using TaskManager.DTOs.DashBoard;
 using TaskManager.Models.Responses;
-using System.Threading.Tasks;
 using Xunit;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace TaskManager.Tests
 {
+
+//Arrange = set up the test
+//Act = run the code
+//Assert = check the result
     public class DashboardServiceTests
     {
         private readonly Mock<IDashboardRepository> _mockRepo;
@@ -39,15 +44,20 @@ namespace TaskManager.Tests
                 HighPriority = 2
             };
 
-            _mockRepo.Setup(r => r.GetDashboardStatsAsync(tenantId, userId, role))
-                     .ReturnsAsync(dummyStats);
+
+            //This means: create fake input values and tell the fake repository what to return.
+
+            _mockRepo.Setup(r => r.GetDashboardStatsAsync(tenantId, userId, role)).ReturnsAsync(dummyStats);
 
             // Act
+            // Run the actual method you want to test. --- This is the main action. You are calling the real DashboardService.
             var response = await _dashboardService.GetDashboardStatsAsync(tenantId, userId, role, logId);
 
             // Assert
+            // Check whether the result is correct.
+            // This means: verify that the service returned success and the expected data.
             Assert.NotNull(response);
-            Assert.Equal(0, response.ResponseCode); // 0 indicates success in ResponseHelper
+            Assert.Equal(0, response.ResponseCode); // 0 indicates success   in ResponseHelper
             Assert.NotNull(response.ResponseDatas);
             Assert.Equal(10, response.ResponseDatas.TotalTasks);
             Assert.Equal(6, response.ResponseDatas.CompletedTasks);

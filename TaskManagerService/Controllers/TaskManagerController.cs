@@ -62,7 +62,7 @@ public class TaskManagerController : ControllerBase
     public async Task<ActionResult<Response>> CreateTask(AddTaskItmDTO request)
     {
         string logId = Guid.NewGuid().ToString();
-        var userId = _currentUserService.GetTenantId;
+        var userId = _currentUserService.GetUserId;
         var tenantId = _currentUserService.GetTenantId;
         _logger.LogInformation("[CreateTask] RequestId: {logId} | UserId: {UserId} | Title: {Title}", logId, userId, request.Title);
 

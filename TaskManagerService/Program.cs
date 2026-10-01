@@ -145,7 +145,7 @@ builder.Services.AddScoped<CurrentUserService>();
 
 //to communicate with APIs over HTTP/HTTPS.
 //register http client 
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient();  // FACTORY PATTERN -------------------->  "Don't create it yourself. I'll create it for you." That factory is IHttpClientFactory
 
 //Redis Service
 builder.Services.AddScoped<RedisService>();
@@ -173,7 +173,6 @@ var conn = builder.Configuration["DB_LOCAL"]?? builder.Configuration["DB_PROD"];
 //{
 //    Console.WriteLine("DB connection loaded.");
 //}
-Console.WriteLine("Using DB: " + conn);
 
 builder.Services.AddDbContext<AuthDBContext>(options => options.UseSqlServer(conn));
 

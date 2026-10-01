@@ -77,6 +77,11 @@ namespace TaskManager.Services
                 // Call Ollama
                 _logger.LogInformation("[{logId}] Sending request to Ollama", logId);
 
+                //You're not creating the object.
+                //You're asking the Factory to create it.
+
+                //In ASP.NET Core, IHttpClient is abuilt-in implementation of the Factory Pattern
+                // FACTORY PATTERN
                 var response = await _httpClient.PostAsJsonAsync("http://localhost:11434/api/generate", payload);
 
 

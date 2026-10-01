@@ -1,0 +1,6 @@
+[submodule "APIGateway"]
+	path = APIGateway
+	url = https://github.com/ahamedaslam/TaskManager_APIGateway.git
+[submodule "AuthenticationService"]
+	path = AuthenticationService
+	url = https://github.com/ahamedaslam/TaskManager_AuthService.git

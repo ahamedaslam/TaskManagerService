@@ -49,5 +49,5 @@ dotnet ef database update --project TaskManagerService
 
 
 ======================================================================
-   SSMS connection: localhost,14333 (sa / StrongPassword@123)
+   SSMS connection: localhost,14333 (sa / <SA_PASSWORD from .env>)
 ======================================================================

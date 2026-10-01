@@ -1,117 +1,201 @@
 version: '3.9'
 
+# Docker Compose starts all services and connects them together.
+# Database and Redis start first, then the application services.
+
 services:
+
+  # SQL Server database
   db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: taskmanager-db
+
+    # SQL Server configuration
     environment:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: ${SA_PASSWORD}
+
+    # Host port 14333 -> Container port 1433
+    # 14333 avoids conflict with a local SQL Server.
     ports:
-      - "14333:1433" # Expose for host DB migrations/management (avoid local SQL conflict)
+      - "14333:1433"
+
+    # Keep database data even if the container is recreated.
     volumes:
       - db_data:/var/opt/mssql
+
+    # Check whether SQL Server is ready to accept connections.
     healthcheck:
-      test: [ "CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "${SA_PASSWORD}", "-C", "-Q", "SELECT 1" ]
+      test:
+        [
+          "CMD",
+          "/opt/mssql-tools18/bin/sqlcmd",
+          "-S", "localhost",
+          "-U", "sa",
+          "-P", "${SA_PASSWORD}",
+          "-C",
+          "-Q", "SELECT 1"
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 15s
+
     networks:
       - taskmanager-network
 
+
+  # Redis cache
   redis:
     image: redis:7.0
     container_name: taskmanager-redis
+
+    # Redis port
     ports:
       - "6379:6379"
+
     networks:
       - taskmanager-network
 
+
+  # Authentication Service
   auth:
     build:
       context: .
       dockerfile: AuthenticationService/Dockerfile
+
     container_name: taskmanager-auth
+
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
       DOTNET_RUNNING_IN_CONTAINER: "true"
+
+      # SQL Server connection
+      # "db" is the Docker service name of SQL Server.
       DB_LOCAL: "Server=db;Database=TaskManagerAuthDB;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;"
       DB_PROD: "Server=db;Database=TaskManagerAuthDB;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;"
+
+      # JWT configuration
       JWT_SECRET: ${JWT_SECRET}
       JWT_ISSUER: ${JWT_ISSUER}
       JWT_AUDIENCE: ${JWT_AUDIENCE}
       JWT_REFRESH_TOKEN_EXPIRY_DAYS: ${JWT_REFRESH_TOKEN_EXPIRY_DAYS}
       JWT_ACCESS_TOKEN_EXPIRY_MINUTES: ${JWT_ACCESS_TOKEN_EXPIRY_MINUTES}
+
+      # OTP configuration
       OTP_EXPIRY_MINUTES: ${OTP_EXPIRY_MINUTES}
+
+      # Redis configuration
+      # "redis" is the Docker service name.
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+      # Email configuration
       EMAIL_FROM: ${EMAIL_FROM}
       EMAIL_SMTP_SERVER: ${EMAIL_SMTP_SERVER}
       EMAIL_PORT: ${EMAIL_PORT}
       EMAIL_USERNAME: ${EMAIL_USERNAME}
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+
+    # Start Auth only after DB is healthy and Redis has started.
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_started
+
+    # Host port 8082 -> Auth container port 8080
     ports:
       - "8082:8080"
+
     networks:
       - taskmanager-network
 
+
+  # Main Task Manager API
   app:
     build:
       context: .
       dockerfile: TaskManagerService/Dockerfile
+
     container_name: taskmanager-api
+
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
       DOTNET_RUNNING_IN_CONTAINER: "true"
+
+      # SQL Server connection
       DB_LOCAL: "Server=db;Database=TaskManagerAuthDB;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;"
       DB_PROD: "Server=db;Database=TaskManagerAuthDB;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;"
+
+      # JWT configuration
       JWT_SECRET: ${JWT_SECRET}
       JWT_ISSUER: ${JWT_ISSUER}
       JWT_AUDIENCE: ${JWT_AUDIENCE}
       JWT_REFRESH_TOKEN_EXPIRY_DAYS: ${JWT_REFRESH_TOKEN_EXPIRY_DAYS}
       JWT_ACCESS_TOKEN_EXPIRY_MINUTES: ${JWT_ACCESS_TOKEN_EXPIRY_MINUTES}
+
+      # OTP configuration
       OTP_EXPIRY_MINUTES: ${OTP_EXPIRY_MINUTES}
+
+      # Redis configuration
       REDIS_HOST: redis
       REDIS_PORT: 6379
+
+      # Email configuration
       EMAIL_FROM: ${EMAIL_FROM}
       EMAIL_SMTP_SERVER: ${EMAIL_SMTP_SERVER}
       EMAIL_PORT: ${EMAIL_PORT}
       EMAIL_USERNAME: ${EMAIL_USERNAME}
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+
+    # Start API after DB is healthy and Redis has started.
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_started
+
+    # Host port 8080 -> API container port 8080
     ports:
       - "8080:8080"
+
     networks:
       - taskmanager-network
 
+
+  # API Gateway
   gateway:
     build:
       context: .
       dockerfile: APIGateway/Dockerfile
+
     container_name: taskmanager-gateway
+
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
+
+    # Gateway starts after Auth and Task Manager APIs are running.
     depends_on:
       auth:
         condition: service_started
       app:
         condition: service_started
+
+    # Host port 8081 -> Gateway container port 8080
     ports:
-      - "8081:8080" # Maps host 8081 to container 8080 (ASP.NET default HTTP port)
+      - "8081:8080"
+
     networks:
       - taskmanager-network
 
+
+# Persistent SQL Server storage
 volumes:
   db_data:
 
+
+# Private network for all Task Manager services
 networks:
   taskmanager-network:
     driver: bridge

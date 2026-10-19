@@ -142,6 +142,9 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
 
+      # Ollama runs on the host machine; host.docker.internal reaches it from the container.
+      OLLAMA_URL: http://host.docker.internal:11434
+
       # Email configuration
       EMAIL_FROM: ${EMAIL_FROM}
       EMAIL_SMTP_SERVER: ${EMAIL_SMTP_SERVER}

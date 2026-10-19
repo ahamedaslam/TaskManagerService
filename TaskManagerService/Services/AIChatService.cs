@@ -13,13 +13,16 @@ namespace TaskManager.Services
         private readonly AuthDBContext _dBContext;
         private readonly HttpClient _httpClient;
         private readonly ILogger<AIChatService> _logger;
+        private readonly string _ollamaUrl;
 
 
-        public AIChatService(AuthDBContext dBContext, HttpClient httpClient, ILogger<AIChatService> logger)
+        public AIChatService(AuthDBContext dBContext, HttpClient httpClient, ILogger<AIChatService> logger, IConfiguration configuration)
         {
             _dBContext = dBContext;
             _httpClient = httpClient;
             _logger = logger;
+            // OLLAMA_URL is set in docker-compose (host.docker.internal); falls back to local Ollama.
+            _ollamaUrl = configuration["OLLAMA_URL"] ?? "http://localhost:11434";
 
         }
 
@@ -82,7 +85,7 @@ namespace TaskManager.Services
 
                 //In ASP.NET Core, IHttpClient is abuilt-in implementation of the Factory Pattern
                 // FACTORY PATTERN
-                var response = await _httpClient.PostAsJsonAsync("http://localhost:11434/api/generate", payload);
+                var response = await _httpClient.PostAsJsonAsync($"{_ollamaUrl}/api/generate", payload);
 
 
 
